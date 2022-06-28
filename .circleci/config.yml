@@ -1,0 +1,72 @@
+# This config is equivalent to both the '.circleci/extended/orb-free.yml' and the base '.circleci/config.yml'
+version: 2.1
+
+# Orbs are reusable packages of CircleCI configuration that you may share across projects, enabling you to create encapsulated, parameterized commands, jobs, and executors that can be used across multiple projects.
+# See: https://circleci.com/docs/2.0/orb-intro/
+orbs:
+  node: circleci/node@4.7
+
+# Invoke jobs via workflows
+# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+workflows:
+  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
+    # Inside the workflow, you define the jobs you want to run.
+    jobs:
+      - node/test:
+          # This is the node version to use for the `cimg/node` tag
+          # Relevant tags can be found on the CircleCI Developer Hub
+          # https://circleci.com/developer/images/image/cimg/node
+          version: '16.10'
+          # If you are using yarn, change the line below from "npm" to "yarn"
+          pkg-manager: npm
+
+
+
+#Integrate with BrowserStack
+
+# machine:
+#   environment:
+#     BROWSERSTACK_USERNAME: "mohammedizhas_DqiMzA"
+#     BROWSERSTACK_ACCESS_KEY: "FjApp8QYJfjajQsQyw6N"
+#     BROWSERSTACK_LOCAL: false
+#     BROWSERSTACK_LOCAL_IDENTIFIER: "identifier"
+
+
+# username = process.env.BROWSERSTACK_USERNAME
+# accessKey = process.env.BROWSERSTACK_ACCESS_KEY
+# browserstackLocal = process.env.BROWSERSTACK_LOCAL
+# browserstackLocalIdentifier = process.env.BROWSERSTACK_LOCAL_IDENTIFIER
+
+# var capabilities = {
+#  "os" : "Windows",
+#  "browser" : "chrome",
+#  "browserstack.local" : browserstackLocal,
+#  "browserstack.localIdentifier" : browserstackLocalIdentifier,
+#  "browserstack.user" : username,
+#  "browserstack.key" : accessKey
+# }
+
+# var driver = new webdriver.Builder().
+#   usingServer("https://hub-cloud.browserstack.com/wd/hub").
+#   withCapabilities(capabilities).
+#   build();
+
+
+
+
+#Running local tests
+
+# machine:
+#   environment:
+#     BROWSERSTACK_USERNAME: "harshashirali_i1TaPx"
+#     BROWSERSTACK_ACCESS_KEY: "qBB512MSPEDyHstEx6Sx"
+#     BROWSERSTACK_LOCAL: false
+# test:
+#     pre:
+#     # Download the browserstack binary file
+#     - wget "https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip"
+#     # Unzip the BrowserStack Local binary file
+#     - unzip BrowserStackLocal-linux-x64.zip
+#     # Run the file with your access key
+#     - ./BrowserStackLocal $BROWSERSTACK_ACCESS_KEY:
+#         background: true
