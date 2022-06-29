@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+
+echo "CIRCLE BRANCH: $CIRCLE_BRANCH"
+echo "CIRCLE PULL REQUEST: $CIRCLE_PULL_REQUEST"
+
