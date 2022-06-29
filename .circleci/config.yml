@@ -19,21 +19,32 @@ orbs:
                 --data revision=$CIRCLE_SHA1 \
                 https://circleci.com/api/v1.1/project/github/mdizhas/allynet-automation/tree/circleci-project-setup
 jobs:
-  xcode10:
-    macos:
-      xcode: "10.2"
-    <<: *bulid-steps
-  gcc-9:
+  test:
     docker:
-      - image: conanio/gcc9
-    <<: *bulid-steps
+      - image: cimg/<language>:<version TAG>
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+    steps:
+      - checkout
+      - run: echo "this is the test job"
+          
+  # xcode10:
+  #   steps:
+  #     - checkout
+  #   macos:
+  #     xcode: 10.2
+  #     <<: bulid-steps
+  # gcc-9:
+  #   docker:
+  #     - image: conanio/gcc9
+  #   <<: bulid-steps
 
 workflows:
-  versions: 2
+  version: 2
   build_and_test:
     jobs:
-      -- gcc-9
-      -- xcode10
+      - test
 
 machine:
   environment:
