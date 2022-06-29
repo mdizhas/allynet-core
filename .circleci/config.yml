@@ -6,67 +6,48 @@ version: 2.1
 orbs:
   node: circleci/node@4.7
 
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+.build-steps: &build-steps
+  steps:
+    - checkout
+    - run:
+      name: Build project
+      command: .circleci/run.sh
+    - run:
+      name: Trigger conan build
+      command: curl --user edee14237be82c217cbd25e1b41c5e2bada40579: \
+                --data build_parameters[CIRCLE_JOB]=build_conan \
+                --data revision=$CIRCLE_SHA1 \
+                https://circleci.com/api/v1.1/project/github/mdizhas/allynet-automation/tree/circleci-project-setup
+jobs:
+  xcode10:
+    macos:
+      xcode: "10.2"
+    <<: *bulid-steps
+  gcc-9:
+    docker:
+      - image: conanio/gcc9
+    <<: *bulid-steps
+
 workflows:
-  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
+  versions: 2
+  build_and_test:
     jobs:
-      - node/test:
-          # This is the node version to use for the `cimg/node` tag
-          # Relevant tags can be found on the CircleCI Developer Hub
-          # https://circleci.com/developer/images/image/cimg/node
-          version: '16.10'
-          # If you are using yarn, change the line below from "npm" to "yarn"
-          pkg-manager: npm
+      -- gcc-9
+      -- xcode10
 
 
-
-#Integrate with BrowserStack
-
-# machine:
-#   environment:
-#     BROWSERSTACK_USERNAME: "mohammedizhas_DqiMzA"
-#     BROWSERSTACK_ACCESS_KEY: "FjApp8QYJfjajQsQyw6N"
-#     BROWSERSTACK_LOCAL: false
-#     BROWSERSTACK_LOCAL_IDENTIFIER: "identifier"
-
-
-# username = process.env.BROWSERSTACK_USERNAME
-# accessKey = process.env.BROWSERSTACK_ACCESS_KEY
-# browserstackLocal = process.env.BROWSERSTACK_LOCAL
-# browserstackLocalIdentifier = process.env.BROWSERSTACK_LOCAL_IDENTIFIER
-
-# var capabilities = {
-#  "os" : "Windows",
-#  "browser" : "chrome",
-#  "browserstack.local" : browserstackLocal,
-#  "browserstack.localIdentifier" : browserstackLocalIdentifier,
-#  "browserstack.user" : username,
-#  "browserstack.key" : accessKey
-# }
-
-# var driver = new webdriver.Builder().
-#   usingServer("https://hub-cloud.browserstack.com/wd/hub").
-#   withCapabilities(capabilities).
-#   build();
+# # Invoke jobs via workflows
+# # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+# workflows:
+#   sample: # This is the name of the workflow, feel free to change it to better match your workflow.
+#     # Inside the workflow, you define the jobs you want to run.
+#     jobs:
+#       - node/test:
+#           # This is the node version to use for the `cimg/node` tag
+#           # Relevant tags can be found on the CircleCI Developer Hub
+#           # https://circleci.com/developer/images/image/cimg/node
+#           version: '16.10'
+#           # If you are using yarn, change the line below from "npm" to "yarn"
+#           pkg-manager: npm
 
 
-
-
-#Running local tests
-
-# machine:
-#   environment:
-#     BROWSERSTACK_USERNAME: "harshashirali_i1TaPx"
-#     BROWSERSTACK_ACCESS_KEY: "qBB512MSPEDyHstEx6Sx"
-#     BROWSERSTACK_LOCAL: false
-# test:
-#     pre:
-#     # Download the browserstack binary file
-#     - wget "https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip"
-#     # Unzip the BrowserStack Local binary file
-#     - unzip BrowserStackLocal-linux-x64.zip
-#     # Run the file with your access key
-#     - ./BrowserStackLocal $BROWSERSTACK_ACCESS_KEY:
-#         background: true
