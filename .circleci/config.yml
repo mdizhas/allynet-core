@@ -31,6 +31,7 @@ jobs:
       - image: conanio/clang10
     steps:
       - checkout
+      - run: sudo chmod +x .circleci/run.sh
       - run: .circleci/run.sh
       - run: curl --user ${CIRCLE_API_USER_TOKEN} \
                 --data build_parameters[CIRCLE_JOB]=build_conan \
