@@ -14,10 +14,15 @@ orbs:
       command: .circleci/run.sh
     - run:
       name: Trigger conan build
-      command: curl --user ${CIRCLE_API_USER_TOKEN} \
-                --data build_parameters[CIRCLE_JOB]=build_conan \
+      # command: curl --user ${CIRCLE_API_USER_TOKEN} \
+      #           --data build_parameters[CIRCLE_JOB]=build_conan \
+      #           --data revision=$CIRCLE_SHA1 \
+      #           https://circleci.com/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH
+
+      command: curl \
+                --data build_parameters[CIRCLE_JOB]=build-test-deploy-project \
                 --data revision=$CIRCLE_SHA1 \
-                https://circleci.com/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH
+                https://circleci.com/api/v1.1/project/github/mdizhas/allynet-automation/tree/circleci-project-setup?circle-token=$CIRCLE_API_USER_TOKEN
 jobs:
   test:
     docker:
